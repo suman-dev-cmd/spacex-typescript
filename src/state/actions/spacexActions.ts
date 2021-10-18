@@ -3,10 +3,12 @@ import { RootState } from '../store';
 import { Spacex } from '../slice/spaceSlice';
 import axios from 'axios';
 
-export const getItems = createAsyncThunk<Spacex[], {statusd:string}, { state: RootState }>('showspacex', async (statusd, thunkAPI) => {
-    let url = 'https://api.spacexdata.com/v3/launches'
-    if(statusd.statusd !=='all'){
-         url = `https://api.spacexdata.com/v3/launches/${statusd.statusd}`
+export const getItems = createAsyncThunk<Spacex[], {statusd:string,offset:number,fromDate:string,toDate:string}, { state: RootState }>('showspacex', async ({statusd,offset,fromDate,toDate}, thunkAPI) => {
+    let url = `https://api.spacexdata.com/v3/launches?limit=10&offset=${offset}&start=${fromDate}&end=${toDate}`
+    // console.log(fromDate)
+    // console.log(toDate)
+    if(statusd !=='all'){
+         url = `https://api.spacexdata.com/v3/launches/${statusd}?limit=3&offset=${offset}`
     }
    
     const response = await axios.get(url)

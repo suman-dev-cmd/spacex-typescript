@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+#react-paginate ul {
+  display: inline-block !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
+#react-paginate li {
+  display: inline-block !important;
+}
