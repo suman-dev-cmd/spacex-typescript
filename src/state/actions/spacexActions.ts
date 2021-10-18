@@ -8,7 +8,7 @@ export const getItems = createAsyncThunk<Spacex[], {statusd:string,offset:number
     // console.log(fromDate)
     // console.log(toDate)
     if(statusd !=='all'){
-         url = `https://api.spacexdata.com/v3/launches/${statusd}?limit=3&offset=${offset}`
+         url = `https://api.spacexdata.com/v3/launches/${statusd}?limit=3&offset=${offset}&start=${fromDate}&end=${toDate}`
     }
    
     const response = await axios.get(url)
