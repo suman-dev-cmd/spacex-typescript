@@ -6,10 +6,11 @@ export interface Spacex {
     launch_date_utc: Date;
     mission_name: string;
     rocket: any;
-    orbit: string;
+    upcoming:boolean;
     launch_success:boolean;
     launch_site?:{
-        site_name:string
+        site_name:string,
+        // [key:string]:unknown|{[key:string]:unknown},
     }
 }
 export interface ShowSpacex {
