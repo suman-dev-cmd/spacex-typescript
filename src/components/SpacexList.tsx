@@ -29,7 +29,7 @@ export const SpacexList: React.FC = () => {
     if (statusd) {
       dispatch(getItems({ statusd, offset, fromDate, toDate }));
     }
-  }, [statusd, offset, fromDate, toDate]);
+  }, [dispatch,statusd, offset, fromDate, toDate]);
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
@@ -66,14 +66,14 @@ export const SpacexList: React.FC = () => {
   return (
     <div className="card text-center mt-5">
       <div className="card-header">
-        <img src={SpacexImg} height={20}/>
+        <img src={SpacexImg} height={20} alt='Spacex'/>
       </div>
       <div className="card-body">
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="row col-12">
               <div className="col-3" style={{ textAlign: "left" }}>
-                From:
+                From Date:
                 <input
                   type="date"
                   className="form-control"
@@ -85,7 +85,7 @@ export const SpacexList: React.FC = () => {
                 />
               </div>
               <div className="col-3" style={{ textAlign: "left" }}>
-                To:
+                To Date:
                 <input
                   type="date"
                   className="form-control"
@@ -147,6 +147,7 @@ export const SpacexList: React.FC = () => {
                     </tr>
                   ))
                 ) : (
+                  <tr>
                   <td colSpan={7}>
                     {errorMessage ? (
                       <>
@@ -158,6 +159,7 @@ export const SpacexList: React.FC = () => {
                       " No Record found"
                     )}
                   </td>
+                  </tr>
                 )}
               </thead>
               <tbody></tbody>
