@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hook";
 import { getItems, getItem } from "../state/actions/spacexActions";
 import { Spacex } from "../state/slice/spaceSlice";
+import SpacexImg from './spacex.png';
 import {
   Modal,
   ModalHeader,
@@ -48,29 +49,25 @@ export const SpacexList: React.FC = () => {
   const getStatus = (upcoming: boolean, launch_success: boolean) => {
     if (upcoming) {
       return (
-        <div className="alert alert-primary" role="alert">
-          Upcoming
-        </div>
+        <span className="badge badge-info" style={{backgroundColor:'#17a2b8'}}>Upcoming</span>
       );
     } else {
       if (launch_success) {
         return (
-          <div className="alert alert-success" role="alert">
-            Success
-          </div>
+          <span className="badge badge-success" style={{backgroundColor:'green'}}>Success</span>
         );
       } else {
         return (
-          <div className="alert alert-danger" role="alert">
-            Faild
-          </div>
+          <span className="badge badge-danger" style={{backgroundColor:'red'}}>Faild</span>
         );
       }
     }
   };
   return (
     <div className="card text-center mt-5">
-      <div className="card-header">Specex</div>
+      <div className="card-header">
+        <img src={SpacexImg} height={20}/>
+      </div>
       <div className="card-body">
         <nav className="navbar navbar-default">
           <div className="container-fluid">
