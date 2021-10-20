@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hook";
 import { getItems, getItem } from "../state/actions/spacexActions";
 import { Spacex } from "../state/slice/spaceSlice";
-import SpacexImg from './spacex.png';
+import SpacexImg from "./spacex.png";
 import {
   Modal,
   ModalHeader,
@@ -19,7 +19,7 @@ export const SpacexList: React.FC = () => {
     (state) => state.spacex
   );
   const [modal, setModal] = useState(false);
-  //  console.log(item)
+  console.log(errorMessage);
   const toggle = () => setModal(!modal);
   const [statusd, setStatusd] = useState<string>("all");
   const [fromDate, setFromDate] = useState<string>("");
@@ -29,7 +29,7 @@ export const SpacexList: React.FC = () => {
     if (statusd) {
       dispatch(getItems({ statusd, offset, fromDate, toDate }));
     }
-  }, [dispatch,statusd, offset, fromDate, toDate]);
+  }, [dispatch, statusd, offset, fromDate, toDate]);
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
@@ -49,16 +49,31 @@ export const SpacexList: React.FC = () => {
   const getStatus = (upcoming: boolean, launch_success: boolean) => {
     if (upcoming) {
       return (
-        <span className="badge badge-info" style={{backgroundColor:'#17a2b8'}}>Upcoming</span>
+        <span
+          className="badge badge-info"
+          style={{ backgroundColor: "#17a2b8" }}
+        >
+          Upcoming
+        </span>
       );
     } else {
       if (launch_success) {
         return (
-          <span className="badge badge-success" style={{backgroundColor:'green'}}>Success</span>
+          <span
+            className="badge badge-success"
+            style={{ backgroundColor: "green" }}
+          >
+            Success
+          </span>
         );
       } else {
         return (
-          <span className="badge badge-danger" style={{backgroundColor:'red'}}>Faild</span>
+          <span
+            className="badge badge-danger"
+            style={{ backgroundColor: "red" }}
+          >
+            Faild
+          </span>
         );
       }
     }
@@ -66,7 +81,7 @@ export const SpacexList: React.FC = () => {
   return (
     <div className="card text-center mt-5">
       <div className="card-header">
-        <img src={SpacexImg} height={20} alt='Spacex'/>
+        <img src={SpacexImg} height={20} alt="Spacex" />
       </div>
       <div className="card-body">
         <nav className="navbar navbar-default">
@@ -139,26 +154,23 @@ export const SpacexList: React.FC = () => {
                       <td>{obj.mission_name}</td>
                       <td>{obj.rocket?.second_stage.payloads[0].orbit}</td>
 
-                      <td>
-                        {getStatus(obj.upcoming,obj.launch_success)}
-                        
-                      </td>
+                      <td>{getStatus(obj.upcoming, obj.launch_success)}</td>
                       <td>{obj.rocket?.rocket_name}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                  <td colSpan={7}>
-                    {errorMessage ? (
-                      <>
-                        <div className="alert alert-danger" role="alert">
-                          {errorMessage}
-                        </div>
-                      </>
-                    ) : (
-                      " No Record found"
-                    )}
-                  </td>
+                    <td colSpan={7}>
+                      {errorMessage ? (
+                        <>
+                          <div className="alert alert-danger" role="alert">
+                            {errorMessage}
+                          </div>
+                        </>
+                      ) : (
+                        " No Record found"
+                      )}
+                    </td>
                   </tr>
                 )}
               </thead>
@@ -201,18 +213,30 @@ export const SpacexList: React.FC = () => {
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Show Launch</ModalHeader>
         <ModalBody>
-          Flight Number: {singleItem?.flight_number}
-          <br />
-          Launched(UTC) :{" "}
-          {moment(singleItem?.launch_date_utc).format("YYYY-MM-DD HH:mm:ss")}
-          <br />
-          Location :{singleItem?.launch_site?.site_name}
-          <br />
-          Mission :{singleItem?.mission_name}
-          <br />
-          Orbit :{singleItem?.rocket?.second_stage.payloads[0].orbit}
-          <br />
-          Rocket :{singleItem?.rocket?.rocket_name}
+          {errorMessage ? (
+            <>
+              <div className="alert alert-danger" role="alert">
+                {errorMessage}
+              </div>
+            </>
+          ) : (
+            <>
+              Flight Number: {singleItem?.flight_number}
+              <br />
+              Launched(UTC) :{" "}
+              {moment(singleItem?.launch_date_utc).format(
+                "YYYY-MM-DD HH:mm:ss"
+              )}
+              <br />
+              Location :{singleItem?.launch_site?.site_name}
+              <br />
+              Mission :{singleItem?.mission_name}
+              <br />
+              Orbit :{singleItem?.rocket?.second_stage.payloads[0].orbit}
+              <br />
+              Rocket :{singleItem?.rocket?.rocket_name}
+            </>
+          )}
         </ModalBody>
       </Modal>
     </div>

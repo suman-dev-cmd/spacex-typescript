@@ -43,12 +43,24 @@ const spaceSlice = createSlice({
         });
         builder.addCase(getItems.rejected, (state, action) => {
             state.itemstate = 'ERROR';
-            state.item = []
-            state.errorMessage = action.error.message || "";
+            state.item = [];
+            let msg = action.error.message;
+            if(action.error.message === 'Rejected'){
+                msg = 'Not Found Launches'
+            }
+            state.errorMessage = msg || "";
         });
         builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number}>) => {
             state.singleItem = action.payload
             
+        });
+        builder.addCase(getItem.rejected, (state, action) => {
+            state.itemstate = 'ERROR';
+            let msg = action.error.message;
+            if(action.error.message === 'Rejected'){
+                msg = 'Not Found Flight Id'
+            }
+            state.errorMessage = msg || "";
         });
     }
 
