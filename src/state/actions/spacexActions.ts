@@ -30,13 +30,14 @@ export const getItems = createAsyncThunk<Spacex[], { statusd: string, offset: nu
 
 })
 
-export const getItem = createAsyncThunk<Spacex, { flight_number: number }, { state: RootState }>('showonespacex', async ({ flight_number }, thunkAPI) => {
+export const getItem = createAsyncThunk<Spacex | string , { flight_number: number }, { state: RootState }>('showonespacex', async ({ flight_number }, thunkAPI) => {
     const url = `https://api.spacexdata.com/v3/launches/${flight_number}`
     const state = thunkAPI.getState();
     const items: Spacex = state.spacex.singleItem;
-    // if (thunkAPI.requestId !== items.flight_number) {
-    //     return
-    // }
+    if (thunkAPI.requestId !== String(items.flight_number)) {
+        const errmsg = 'Flight Number Not Found'
+        return errmsg
+    }
     try {
         const response = await axios.get(url)
         // console.log(response);
