@@ -51,6 +51,9 @@ const spaceSlice = createSlice({
             state.errorMessage = msg || "";
         });
         builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number}|string>) => {
+            if(typeof action.payload === 'string'){
+                state.errorMessage = action.payload;
+            }
             state.singleItem = action.payload  
         });
         builder.addCase(getItem.rejected, (state, action) => {
