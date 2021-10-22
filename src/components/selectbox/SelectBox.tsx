@@ -1,10 +1,14 @@
 import React from "react";
-interface SelecboxProps{
-    changeStatus:(e: React.ChangeEvent<HTMLSelectElement>)=>void;
-}
-const SelectBox = ({changeStatus}:SelecboxProps) => {
+import { useAppDispatch } from "../../hooks/hook";
+import {  changeStatus } from "../../state/slice/spaceSlice";
+
+const SelectBox:React.FC = () => {
+  const dispatch = useAppDispatch();
+  const changeLaunches = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(changeStatus(e.target.value));
+  };
   return (
-    <select onChange={changeStatus}>
+    <select onChange={changeLaunches}>
       <option value="all">All Launches</option>
       <option value="upcoming">Upcoming Launches</option>
       <option value="sucess">Success Launches</option>

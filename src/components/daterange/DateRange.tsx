@@ -1,23 +1,20 @@
 import { DateRangePickerComponent } from "@syncfusion/ej2-react-calendars";
-interface DateProps {
- 
-  onSelect: (value: any) => any;
- 
-}
-const DateRange = ({
- 
-  onSelect,
+import { useAppDispatch } from "../../hooks/hook";
+import {  onSelect } from "../../state/slice/spaceSlice";
 
-}: DateProps) => {
-
-  
+const DateRange = () => {
+  const dispatch = useAppDispatch();
+  const onDateSelect = (value:any) => {
+    dispatch(onSelect(value));
+    
+  };
   return (
     <div>
 
       <DateRangePickerComponent
         placeholder="Enter Date Range"
         format='yyyy-MM-dd'
-        onChange={onSelect}
+        onChange={onDateSelect}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {getItems,getItem} from '../actions/spacexActions';
+import moment from 'moment';
 export interface Spacex {
     flight_number: number|undefined;
     launch_date_utc: Date;
@@ -17,14 +18,20 @@ export interface ShowSpacex {
     isLoading: boolean,
     singleItem:any,
     modal:boolean,
-    errorMessage: string
+    errorMessage: string,
+    statusd:string,
+    start:string,
+    end:string
 }
 const initialState: ShowSpacex = {
     item: [],
     singleItem: {},
     modal:false,
     isLoading: true,
-    errorMessage: ''
+    errorMessage: '',
+    statusd:'all',
+    start:'',
+    end:''
 };
 
 
@@ -35,6 +42,19 @@ const spaceSlice = createSlice({
         getModalFalse:(state)=>{
             state.modal = false;
             state.singleItem = {};
+        },
+        changeStatus:(state,action)=>{
+            state.statusd = action.payload
+        },
+        onSelect:(state,action)=>{
+            if(action.payload.value != null){
+                state.start= moment(action.payload.value[0]).format("YYYY-MM-DD");
+                state.end = moment(action.payload.value[1]).format("YYYY-MM-DD");
+              }else{
+                state.start= '';
+                state.end = '';
+              }
+       
         }
     },
     extraReducers: 
@@ -75,5 +95,5 @@ const spaceSlice = createSlice({
 
 });
 
-export const {getModalFalse} = spaceSlice.actions;
+export const {getModalFalse,changeStatus,onSelect} = spaceSlice.actions;
 export default spaceSlice.reducer;

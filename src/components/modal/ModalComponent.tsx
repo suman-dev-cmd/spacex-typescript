@@ -9,7 +9,6 @@ import {
   } from "reactstrap";
 import moment from "moment";
 import Roket from './rocket.png';
-import { getItem } from "../../state/actions/spacexActions";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import {  getModalFalse } from "../../state/slice/spaceSlice";
 
