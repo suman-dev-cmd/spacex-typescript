@@ -1,51 +1,90 @@
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hook";
 import { getItems, getItem } from "../state/actions/spacexActions";
-import { Spacex } from "../state/slice/spaceSlice";
+import { Spacex, getModalFalse } from "../state/slice/spaceSlice";
 import SpacexImg from "./spacex.png";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-} from "reactstrap";
-import moment from "moment";
-
+import TableComponent from "./table/TableComponent";
+import * as Moment from "moment";
+import {extendMoment} from 'moment-range';
+import ModalComponent from "./modal/ModalComponent";
+import DateRange from "./daterange/DateRange";
+const moment = extendMoment(Moment);
+export interface ModifyTableProps {
+  id: number;
+  flight_number: number;
+  launch_date_utc: string;
+  mission_name: string;
+  rocket_name: string;
+  orbit: string;
+  upcoming: boolean;
+  launch_success: boolean;
+  launch_site?: string;
+}
 export const SpacexList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { item, itemstate, errorMessage, singleItem } = useAppSelector(
+  const today = moment();
+
+  const { item, isLoading, modal, errorMessage, singleItem } = useAppSelector(
     (state) => state.spacex
   );
-  const [modal, setModal] = useState(false);
-  console.log(errorMessage);
-  const toggle = () => setModal(!modal);
+  let editable: ModifyTableProps[] = [];
+  if (item) {
+    editable = item.map((item) => {
+      const container = {} as ModifyTableProps;
+
+      container.id = item.flight_number;
+      container.flight_number = item.flight_number;
+      container.launch_date_utc = moment(item.launch_date_utc).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      container.mission_name = item.mission_name;
+      container.rocket_name = item.rocket?.rocket_name;
+      container.orbit = item.rocket?.second_stage.payloads[0].orbit;
+      container.upcoming = item.upcoming;
+      container.launch_success = item.launch_success;
+      container.launch_site = item.launch_site?.site_name;
+
+      return container;
+    });
+  }
+  // console.log(item);
+  const toggle = () => dispatch(getModalFalse());
   const [statusd, setStatusd] = useState<string>("all");
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
-  const [offset, setOffset] = useState<number>(0);
+  const [isOpen,setIsOpen] = useState(false);
+  const [value,setValue] = useState(moment.range(today.clone().subtract(3000, "days"), today.clone()));
+ 
+  const onSelect = (value:any) => {
+
+    setValue( value);
+  };
+
+ const  onToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const renderSelectionValue = () => {
+    return (
+      <div>
+       
+        {value.start.format("YYYY-MM-DD")}
+        {" - "}
+        {value.end.format("YYYY-MM-DD")}
+      </div>
+    );
+  };
   useEffect(() => {
     if (statusd) {
-      dispatch(getItems({ statusd, offset, fromDate, toDate }));
+      dispatch(getItems({ statusd, value }));
     }
-  }, [dispatch, statusd, offset, fromDate, toDate]);
+  }, [dispatch, statusd, value]);
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
   const getSignleItem = (flight_number: number) => {
     // console.log(flight_number)
     dispatch(getItem({ flight_number }));
-    setModal(true);
   };
-  const handleSelected = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    data: number
-  ) => {
-    console.log(data);
-    e.preventDefault();
-    setOffset(data);
-  };
+
   const getStatus = (upcoming: boolean, launch_success: boolean) => {
     if (upcoming) {
       return (
@@ -78,6 +117,7 @@ export const SpacexList: React.FC = () => {
       }
     }
   };
+
   return (
     <div className="card text-center mt-5">
       <div className="card-header">
@@ -87,29 +127,8 @@ export const SpacexList: React.FC = () => {
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="row col-12">
-              <div className="col-3" style={{ textAlign: "left" }}>
-                From Date:
-                <input
-                  type="date"
-                  className="form-control"
-                  value={fromDate}
-                  name="fromDate"
-                  onChange={(e) =>
-                    setFromDate(moment(e.target.value).format("YYYY-MM-DD"))
-                  }
-                />
-              </div>
-              <div className="col-3" style={{ textAlign: "left" }}>
-                To Date:
-                <input
-                  type="date"
-                  className="form-control"
-                  value={toDate}
-                  name="toDate"
-                  onChange={(e) =>
-                    setToDate(moment(e.target.value).format("YYYY-MM-DD"))
-                  }
-                />
+              <div className="col-6" style={{ textAlign: "left" }}>
+              <DateRange isOpen={isOpen} value={value} onToggle={onToggle} onSelect={onSelect}  renderSelectionValue={renderSelectionValue}/>
               </div>
               <div className="col-6" style={{ textAlign: "right" }}>
                 <select onChange={changeStatus}>
@@ -122,123 +141,27 @@ export const SpacexList: React.FC = () => {
             </div>
           </div>
         </nav>
-        {itemstate === "LOADING" ? (
+        {isLoading ? (
           <>Loading.......</>
         ) : (
           <>
-            <table className="table table-bordered">
-              <thead className="thead-dark">
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Launched(UTC)</th>
-                  <th scope="col">Location</th>
-                  <th scope="col">Mission</th>
-                  <th scope="col">Orbit</th>
-                  <th scope="col">Launch Status</th>
-                  <th scope="col">Rocket</th>
-                </tr>
-                {item.length > 0 ? (
-                  item.map((obj: Spacex, i: number) => (
-                    <tr
-                      key={i}
-                      onClick={() => getSignleItem(obj.flight_number)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{obj.flight_number}</td>
-                      <td>
-                        {moment(obj.launch_date_utc).format(
-                          "YYYY-MM-DD HH:mm:ss"
-                        )}
-                      </td>
-                      <td>{obj.launch_site?.site_name}</td>
-                      <td>{obj.mission_name}</td>
-                      <td>{obj.rocket?.second_stage.payloads[0].orbit}</td>
+            {editable.length > 0 && (
+              <TableComponent
+                editable={editable}
+                getStatus={getStatus}
+                getSignleItem={getSignleItem}
+              />
+            )}
 
-                      <td>{getStatus(obj.upcoming, obj.launch_success)}</td>
-                      <td>{obj.rocket?.rocket_name}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={7}>
-                      {errorMessage ? (
-                        <>
-                          <div className="alert alert-danger" role="alert">
-                            {errorMessage}
-                          </div>
-                        </>
-                      ) : (
-                        " No Record found"
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </thead>
-              <tbody></tbody>
-            </table>
-            <div style={{ float: "right" }}>
-              <div className="pagination-wrapper">
-                <Pagination aria-label="Page navigation example">
-                  <PaginationItem disabled={offset <= 0}>
-                    <PaginationLink
-                      previous
-                      href="#"
-                      onClick={(e) => handleSelected(e, offset - 1)}
-                    />
-                  </PaginationItem>
-                  {[...Array(100 / 10)].map((page, i) => (
-                    <PaginationItem active={i === offset} key={i}>
-                      <PaginationLink
-                        onClick={(e) => handleSelected(e, i)}
-                        href="#"
-                      >
-                        {i + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-
-                  <PaginationItem disabled={offset >= 100 - 1}>
-                    <PaginationLink
-                      next
-                      onClick={(e) => handleSelected(e, offset + 1)}
-                      href="#"
-                    />
-                  </PaginationItem>
-                </Pagination>
-              </div>
-            </div>
+            <ModalComponent
+              modal={modal}
+              errorMessage={errorMessage}
+              singleItem={singleItem}
+              toggle={toggle}
+            />
           </>
         )}
       </div>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Show Launch</ModalHeader>
-        <ModalBody>
-          {errorMessage ? (
-            <>
-              <div className="alert alert-danger" role="alert">
-                {errorMessage}
-              </div>
-            </>
-          ) : (
-            <>
-              Flight Number: {singleItem?.flight_number}
-              <br />
-              Launched(UTC) :{" "}
-              {moment(singleItem?.launch_date_utc).format(
-                "YYYY-MM-DD HH:mm:ss"
-              )}
-              <br />
-              Location :{singleItem?.launch_site?.site_name}
-              <br />
-              Mission :{singleItem?.mission_name}
-              <br />
-              Orbit :{singleItem?.rocket?.second_stage.payloads[0].orbit}
-              <br />
-              Rocket :{singleItem?.rocket?.rocket_name}
-            </>
-          )}
-        </ModalBody>
-      </Modal>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {getItems,getItem} from '../actions/spacexActions';
-type SpacexState = "LOADING" | "READY" | "ERROR";
 export interface Spacex {
     flight_number: number;
     launch_date_utc: Date;
@@ -15,14 +14,16 @@ export interface Spacex {
 }
 export interface ShowSpacex {
     item: Spacex[];
-    itemstate: SpacexState,
+    isLoading: boolean,
     singleItem:any,
+    modal:boolean,
     errorMessage: string
 }
 const initialState: ShowSpacex = {
     item: [],
     singleItem: {},
-    itemstate: 'READY',
+    modal:false,
+    isLoading: true,
     errorMessage: ''
 };
 
@@ -30,19 +31,24 @@ const initialState: ShowSpacex = {
 const spaceSlice = createSlice({
     name: 'spacex',
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        getModalFalse:(state)=>{
+            state.modal = false;
+            state.singleItem = {};
+        }
+    },
     extraReducers: 
     function (builder) {
         builder.addCase(getItems.pending, (state, action) => {
-            state.itemstate = 'LOADING';
+            state.isLoading = true;
         });
         builder.addCase(getItems.fulfilled, (state, action: PayloadAction<Spacex[]>) => {
-            state.itemstate= 'READY';
+            state.isLoading= false;
             state.item = action.payload
             state.errorMessage = '';
         });
         builder.addCase(getItems.rejected, (state, action) => {
-            state.itemstate = 'ERROR';
+            state.isLoading = false;
             state.item = [];
             let msg = action.error.message;
             if(action.error.message === 'Rejected'){
@@ -50,14 +56,15 @@ const spaceSlice = createSlice({
             }
             state.errorMessage = msg || "";
         });
-        builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number}|string>) => {
-            if(typeof action.payload === 'string'){
-                state.errorMessage = action.payload;
-            }
+        builder.addCase(getItem.pending, (state, action) => {
+            state.modal = false; 
+        });
+        builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number}>) => {
+            state.modal = true;
             state.singleItem = action.payload  
         });
         builder.addCase(getItem.rejected, (state, action) => {
-            state.itemstate = 'ERROR';
+            state.modal = true;
             let msg = action.error.message;
             if(action.error.message === 'Rejected'){
                 msg = 'Not Found Flight Id'
@@ -68,5 +75,5 @@ const spaceSlice = createSlice({
 
 });
 
-
+export const {getModalFalse} = spaceSlice.actions;
 export default spaceSlice.reducer;
