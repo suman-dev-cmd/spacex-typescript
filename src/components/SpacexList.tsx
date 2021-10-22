@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../hooks/hook";
-import { getItems, getItem } from "../state/actions/spacexActions";
-import { Spacex, getModalFalse } from "../state/slice/spaceSlice";
+import { useAppDispatch } from "../hooks/hook";
+import { getItems } from "../state/actions/spacexActions";
 import SpacexImg from "./spacex.png";
 import TableComponent from "./table/TableComponent";
 import * as Moment from "moment";
@@ -24,32 +23,6 @@ export interface ModifyTableProps {
 export const SpacexList: React.FC = () => {
   const dispatch = useAppDispatch();
   const today = moment();
-
-  const { item, isLoading, modal, errorMessage, singleItem } = useAppSelector(
-    (state) => state.spacex
-  );
-  let editable: ModifyTableProps[] = [];
-  if (item) {
-    editable = item.map((item) => {
-      const container = {} as ModifyTableProps;
-      if(item.flight_number !== undefined)
-      container.id = item.flight_number;
-      container.flight_number = item.flight_number;
-      container.launch_date_utc = moment(item.launch_date_utc).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      container.mission_name = item.mission_name;
-      container.rocket_name = item.rocket?.rocket_name;
-      container.orbit = item.rocket?.second_stage.payloads[0].orbit;
-      container.upcoming = item.upcoming;
-      container.launch_success = item.launch_success;
-      container.launch_site = item.launch_site?.site_name;
-
-      return container;
-    });
-  }
-  // console.log(item);
-  const toggle = () => dispatch(getModalFalse());
   const [statusd, setStatusd] = useState<string>("all");
   const [isOpen,setIsOpen] = useState(false);
   const [value,setValue] = useState(moment.range(today.clone().subtract(3000, "days"), today.clone()));
@@ -81,45 +54,9 @@ export const SpacexList: React.FC = () => {
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
-  const getSignleItem = (flight_number: number|undefined) => {
-    // console.log(flight_number)
-    if(typeof flight_number !== undefined){
-      dispatch(getItem({ flight_number }));
-    }
-  };
+ 
 
-  const getStatus = (upcoming: boolean, launch_success: boolean) => {
-    if (upcoming) {
-      return (
-        <span
-          className="badge badge-info"
-          style={{ backgroundColor: "#17a2b8" }}
-        >
-          Upcoming
-        </span>
-      );
-    } else {
-      if (launch_success) {
-        return (
-          <span
-            className="badge badge-success"
-            style={{ backgroundColor: "green" }}
-          >
-            Success
-          </span>
-        );
-      } else {
-        return (
-          <span
-            className="badge badge-danger"
-            style={{ backgroundColor: "red" }}
-          >
-            Faild
-          </span>
-        );
-      }
-    }
-  };
+
 
   return (
     <div className="card text-center mt-5">
@@ -140,26 +77,8 @@ export const SpacexList: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isLoading ? (
-          <>Loading.......</>
-        ) : (
-          <>
-            {editable.length > 0 && (
-              <TableComponent
-                editable={editable}
-                getStatus={getStatus}
-                getSignleItem={getSignleItem}
-              />
-            )}
-
-            <ModalComponent
-              modal={modal}
-              errorMessage={errorMessage}
-              singleItem={singleItem}
-              toggle={toggle}
-            />
-          </>
-        )}
+        <TableComponent />
+         <ModalComponent />
       </div>
     </div>
   );

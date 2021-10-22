@@ -9,13 +9,16 @@ import {
   } from "reactstrap";
 import moment from "moment";
 import Roket from './rocket.png';
-interface ModalProps{
-    modal:boolean;
-    errorMessage:string;
-    singleItem?:Spacex;
-    toggle:()=>void
-}
-const ModalComponent = ({modal,errorMessage,singleItem,toggle}:ModalProps) => {
+import { getItem } from "../../state/actions/spacexActions";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import {  getModalFalse } from "../../state/slice/spaceSlice";
+
+const ModalComponent:React.FC = () => {
+  const {  modal, errorMessage, singleItem } = useAppSelector(
+    (state) => state.spacex
+  );
+  const dispatch = useAppDispatch();
+  const toggle = () => dispatch(getModalFalse());
     return (
         <Modal isOpen={modal} toggle={toggle} aria-labelledby="contained-modal-title-vcenter">
         <ModalHeader toggle={toggle}>Show Launch</ModalHeader>
