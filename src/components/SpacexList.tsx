@@ -8,6 +8,7 @@ import * as Moment from "moment";
 import {extendMoment} from 'moment-range';
 import ModalComponent from "./modal/ModalComponent";
 import DateRange from "./daterange/DateRange";
+import SelectBox from "./selectbox/SelectBox";
 const moment = extendMoment(Moment);
 export interface ModifyTableProps {
   id: number;
@@ -131,12 +132,8 @@ export const SpacexList: React.FC = () => {
               <DateRange isOpen={isOpen} value={value} onToggle={onToggle} onSelect={onSelect}  renderSelectionValue={renderSelectionValue}/>
               </div>
               <div className="col-6" style={{ textAlign: "right" }}>
-                <select onChange={changeStatus}>
-                  <option value="all">All Launches</option>
-                  <option value="upcoming">Upcoming Launches</option>
-                  <option value="sucess">Success Launches</option>
-                  <option value="faild">Faild Launches</option>
-                </select>
+                <SelectBox changeStatus={changeStatus} />
+             
               </div>
             </div>
           </div>
