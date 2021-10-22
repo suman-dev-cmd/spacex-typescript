@@ -24,33 +24,26 @@ export const SpacexList: React.FC = () => {
   const dispatch = useAppDispatch();
   const today = moment();
   const [statusd, setStatusd] = useState<string>("all");
-  const [isOpen,setIsOpen] = useState(false);
-  const [value,setValue] = useState(moment.range(today.clone().subtract(3000, "days"), today.clone()));
+  const [start,setStart] = useState('');
+  const [end,setEnd] = useState('');
  
   const onSelect = (value:any) => {
-
-    setValue( value);
+    if(value.value != null){
+      setStart(moment(value.value[0]).format("YYYY-MM-DD"));
+      setEnd(moment(value.value[1]).format("YYYY-MM-DD"));
+    }else{
+      setStart('');
+      setEnd('');
+    }
+    
   };
 
- const  onToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const renderSelectionValue = () => {
-    return (
-      <div>
-       
-        {value.start.format("YYYY-MM-DD")}
-        {" - "}
-        {value.end.format("YYYY-MM-DD")}
-      </div>
-    );
-  };
+ 
   useEffect(() => {
     if (statusd) {
-      dispatch(getItems({ statusd, value }));
+      dispatch(getItems({ statusd, start,end }));
     }
-  }, [dispatch, statusd, value]);
+  }, [dispatch, statusd, start,end]);
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
@@ -67,8 +60,10 @@ export const SpacexList: React.FC = () => {
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="row col-12">
-              <div className="col-6" style={{ textAlign: "left" }}>
-              <DateRange isOpen={isOpen} value={value} onToggle={onToggle} onSelect={onSelect}  renderSelectionValue={renderSelectionValue}/>
+              <div className="col-3" style={{ textAlign: "left" }}>
+              <DateRange onSelect={onSelect}  />
+              </div>
+              <div className="col-3" style={{ textAlign: "left" }}>
               </div>
               <div className="col-6" style={{ textAlign: "right" }}>
                 <SelectBox changeStatus={changeStatus} />

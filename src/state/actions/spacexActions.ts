@@ -3,14 +3,15 @@ import { RootState } from '../store';
 import { Spacex } from '../slice/spaceSlice';
 import axios from 'axios';
 import moment from "moment";
-export const getItems = createAsyncThunk<Spacex[], { statusd: string,  value:any}>('showspacex', async ({ statusd, value}, { rejectWithValue }) => {
+export const getItems = createAsyncThunk<Spacex[], { statusd: string,  start:string,end:string}>('showspacex', async ({ statusd, start,end}, { rejectWithValue }) => {
     let fromDate = '';
     let toDate = '';
-    if(value){
-         fromDate = value.start.format("YYYY-MM-DD");
-         toDate = value.end.format("YYYY-MM-DD");
+    if(start && end ){
+         fromDate = start;
+         toDate = end;
     }
     let url = `https://api.spacexdata.com/v3/launches?&start=${fromDate}&end=${toDate}`;
+    console.log(url);
     if (statusd === 'upcoming') {
         url = `https://api.spacexdata.com/v3/launches/${statusd}?&start=${fromDate}&end=${toDate}`;
     }

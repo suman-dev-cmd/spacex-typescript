@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import moment from "moment";
 
 const TableComponent: React.FC = () => {
-  const { item, isLoading, modal, errorMessage, singleItem } = useAppSelector(
+  const { item, isLoading, errorMessage } = useAppSelector(
     (state) => state.spacex
   );
   const dispatch = useAppDispatch();

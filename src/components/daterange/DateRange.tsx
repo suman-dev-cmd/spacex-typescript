@@ -1,41 +1,33 @@
-import React,{useState} from 'react'
+import React, { useState } from "react";
 import DateRangePicker from "react-daterange-picker";
 import "react-daterange-picker/dist/css/react-calendar.css";
+import { DateRangePickerComponent } from "@syncfusion/ej2-react-calendars";
 import * as Moment from "moment";
-import {extendMoment} from 'moment-range';
-
+import { extendMoment } from "moment-range";
 
 const moment = extendMoment(Moment);
-interface DateProps{
-    isOpen:boolean;
-    value:any;
-    onSelect:(value:any)=>any;
-    onToggle:()=>void;
-    renderSelectionValue:()=>any
+interface DateProps {
+ 
+  onSelect: (value: any) => any;
+ 
 }
-const DateRange = ({isOpen,value,onToggle,onSelect,renderSelectionValue}:DateProps) => {
-   
-    return (
-        <div>
-        <div>{renderSelectionValue()}</div>
+const DateRange = ({
+ 
+  onSelect,
 
-        <div>
-          <input
-            type="button"
-            value="Select Date"
-            onClick={onToggle}
-          />
-        </div>
+}: DateProps) => {
 
-        {isOpen && (
-          <DateRangePicker
-            value={value}
-            onSelect={onSelect}
-            singleDateRange={true}
-          />
-        )}
-      </div>
-    )
-}
+  
+  return (
+    <div>
+
+      <DateRangePickerComponent
+        placeholder="Enter Date Range"
+        format='yyyy-MM-dd'
+        onChange={onSelect}
+      />
+    </div>
+  );
+};
 
 export default DateRange;
