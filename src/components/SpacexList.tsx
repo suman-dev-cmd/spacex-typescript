@@ -11,8 +11,8 @@ import DateRange from "./daterange/DateRange";
 import SelectBox from "./selectbox/SelectBox";
 const moment = extendMoment(Moment);
 export interface ModifyTableProps {
-  id: number;
-  flight_number: number;
+  id: number|undefined;
+  flight_number: number|undefined;
   launch_date_utc: string;
   mission_name: string;
   rocket_name: string;
@@ -32,7 +32,7 @@ export const SpacexList: React.FC = () => {
   if (item) {
     editable = item.map((item) => {
       const container = {} as ModifyTableProps;
-
+      if(item.flight_number !== undefined)
       container.id = item.flight_number;
       container.flight_number = item.flight_number;
       container.launch_date_utc = moment(item.launch_date_utc).format(
@@ -81,9 +81,11 @@ export const SpacexList: React.FC = () => {
   const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusd(e.target.value);
   };
-  const getSignleItem = (flight_number: number) => {
+  const getSignleItem = (flight_number: number|undefined) => {
     // console.log(flight_number)
-    dispatch(getItem({ flight_number }));
+    if(typeof flight_number !== undefined){
+      dispatch(getItem({ flight_number }));
+    }
   };
 
   const getStatus = (upcoming: boolean, launch_success: boolean) => {

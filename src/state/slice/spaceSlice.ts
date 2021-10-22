@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {getItems,getItem} from '../actions/spacexActions';
 export interface Spacex {
-    flight_number: number;
+    flight_number: number|undefined;
     launch_date_utc: Date;
     mission_name: string;
     rocket: any;
@@ -59,7 +59,7 @@ const spaceSlice = createSlice({
         builder.addCase(getItem.pending, (state, action) => {
             state.modal = false; 
         });
-        builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number}>) => {
+        builder.addCase(getItem.fulfilled, (state, action: PayloadAction<{flight_number:number|undefined}>) => {
             state.modal = true;
             state.singleItem = action.payload  
         });

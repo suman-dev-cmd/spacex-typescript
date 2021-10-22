@@ -34,7 +34,7 @@ export const getItems = createAsyncThunk<Spacex[], { statusd: string,  value:any
 
 })
 
-export const getItem = createAsyncThunk<Spacex , { flight_number: number }, { state: RootState }>('showonespacex', async ({ flight_number }, thunkAPI) => {
+export const getItem = createAsyncThunk<Spacex , { flight_number: number|undefined }, { state: RootState }>('showonespacex', async ({ flight_number }, thunkAPI) => {
     const url = `https://api.spacexdata.com/v3/launches/${flight_number}`
     const state = thunkAPI.getState();
     const items: Spacex = state.spacex.singleItem;

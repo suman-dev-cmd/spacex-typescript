@@ -4,7 +4,7 @@ import MaterialTable from 'material-table'
 interface TableProps{
     editable:ModifyTableProps[];
     getStatus:(upcoming:boolean,launch_status:boolean)=>any;
-    getSignleItem:(flight_number:number)=>any;
+    getSignleItem:(flight_number:number|undefined)=>any;
 }
 const TableComponent = ({editable,getStatus,getSignleItem}:TableProps) => {
     return (
@@ -21,7 +21,7 @@ const TableComponent = ({editable,getStatus,getSignleItem}:TableProps) => {
           { title: "Rocket", field: "rocket_name"},
         ]}
         data={editable}
-        onRowClick={((evt, selectedRow) => getSignleItem(1))}  
+        onRowClick={((evt:React.MouseEvent<Element, MouseEvent>|undefined, selectedRow:ModifyTableProps|undefined) => getSignleItem(selectedRow?.flight_number))}  
       />
     )
 }
