@@ -68,7 +68,7 @@ const TableComponent: React.FC = () => {
     }
   };
   return (
-    <>
+    <div data-testId='table-component'>
       {isLoading ? (
         <>Loading.......</>
       ) : (
@@ -114,7 +114,7 @@ const TableComponent: React.FC = () => {
           )}
         </>
       )}
-    </>
+    </div>
   );
 };
 

@@ -8,7 +8,7 @@ import {
     Col
   } from "reactstrap";
 import moment from "moment";
-import Roket from './rocket.png';
+// import Roket from './rocket.png';
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import {  getModalFalse } from "../../state/slice/spaceSlice";
 
@@ -32,7 +32,7 @@ const ModalComponent:React.FC = () => {
             <Container>
             <Row>
               <Col xs={12} md={4}>
-                <img src={Roket} alt='rocket' height={100}/>
+                {/* <img src={Roket} alt='rocket' height={100}/> */}
               </Col>
               <Col xs={6} md={8}>
               Flight Number: {singleItem?.flight_number}

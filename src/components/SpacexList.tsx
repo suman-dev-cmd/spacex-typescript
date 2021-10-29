@@ -31,7 +31,7 @@ export const SpacexList: React.FC = () => {
   }, [dispatch, statusd, start,end]);
   
   return (
-    <div className="card text-center mt-5">
+    <div className="card text-center mt-5" data-test="component">
       <div className="card-header">
         <img src={SpacexImg} height={20} alt="Spacex" />
       </div>
